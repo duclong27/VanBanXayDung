@@ -77,3 +77,12 @@ Nếu có thêm thời gian phát triển, một số hướng mở rộng đán
 - Hiển thị mối liên hệ giữa các văn bản (văn bản thay thế/bị thay thế, văn bản hướng dẫn thi hành).
 - Cảnh báo văn bản sắp hết hiệu lực.
 - Tìm kiếm ngữ nghĩa (semantic search) bằng vector embedding, thay vì chỉ tìm theo từ khoá, để cải thiện độ chính xác khi người dùng không nhớ chính xác từ ngữ trong văn bản.
+
+
+Một số hình ảnh demo: 
+
+<img width="1897" height="1060" alt="image" src="https://github.com/user-attachments/assets/a4e148c7-a7c1-4b3f-83c9-6f23680a0390" />
+<img width="1902" height="1066" alt="image" src="https://github.com/user-attachments/assets/a7b1561c-5039-4a6d-9ad0-db7ee9eb3189" />
+<img width="1918" height="1078" alt="image" src="https://github.com/user-attachments/assets/c1c87a3e-f47f-4bf0-9cd2-a4fc254c56b3" />
+
+
