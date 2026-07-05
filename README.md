@@ -73,7 +73,7 @@ Cấu trúc bảng và dữ liệu mẫu được cung cấp trong file `du_lieu
 
 Nếu có thêm thời gian phát triển, một số hướng mở rộng đáng cân nhắc:
 
-- Phân quyền quản trị viên (thêm/sửa/xoá văn bản trực tiếp trên giao diện).
+- Phát triển AI summary tóm tắt nội dung của từng văn bản 
 - Hiển thị mối liên hệ giữa các văn bản (văn bản thay thế/bị thay thế, văn bản hướng dẫn thi hành).
 - Cảnh báo văn bản sắp hết hiệu lực.
 - Tìm kiếm ngữ nghĩa (semantic search) bằng vector embedding, thay vì chỉ tìm theo từ khoá, để cải thiện độ chính xác khi người dùng không nhớ chính xác từ ngữ trong văn bản.
