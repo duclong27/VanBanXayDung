@@ -1,8 +1,15 @@
-// Middleware — đồng bộ Supabase session giữa client và server trên mọi request
-// Bắt buộc phải có để Server Component đọc được session sau khi đăng nhập
+// Middleware — đồng bộ session Supabase + bảo vệ toàn bộ app
+// Logic: cho qua nếu đã đăng nhập HOẶC đang ở route được loại trừ.
+// Ngược lại redirect ngay về /login trước khi bất kỳ trang nào được render.
 
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse } from 'next/server';
+
+// Route KHÔNG cần đăng nhập (blacklist approach — mọi route còn lại đều được bảo vệ)
+const PUBLIC_PATHS = [
+  '/login',  // trang đăng nhập — bắt buộc phải loại trừ để tránh redirect loop
+  '/api/',   // API routes — trả JSON, không thể redirect về HTML login
+];
 
 export async function middleware(request) {
   let supabaseResponse = NextResponse.next({ request });
@@ -16,11 +23,9 @@ export async function middleware(request) {
           return request.cookies.getAll();
         },
         setAll(cookiesToSet) {
-          // Ghi cookie vào request để các handler tiếp theo đọc được
           cookiesToSet.forEach(({ name, value }) =>
             request.cookies.set(name, value)
           );
-          // Tạo lại response và ghi cookie vào response để browser lưu
           supabaseResponse = NextResponse.next({ request });
           cookiesToSet.forEach(({ name, value, options }) =>
             supabaseResponse.cookies.set(name, value, options)
@@ -30,16 +35,26 @@ export async function middleware(request) {
     }
   );
 
-  // QUAN TRỌNG: Gọi getUser() để refresh token nếu hết hạn.
-  // Không dùng getSession() vì nó không verify token phía server.
-  await supabase.auth.getUser();
+  // getUser() refresh token nếu hết hạn, verify phía server (an toàn hơn getSession)
+  const { data: { user } } = await supabase.auth.getUser();
+
+  const { pathname } = request.nextUrl;
+
+  const isPublic = PUBLIC_PATHS.some((p) => pathname.startsWith(p));
+
+  // Chưa đăng nhập + không phải route public → redirect ngay về /login
+  // Điều này xảy ra TRƯỚC KHI bất kỳ Server Component nào được render
+  if (!user && !isPublic) {
+    return NextResponse.redirect(new URL('/login', request.url));
+  }
 
   return supabaseResponse;
 }
 
 export const config = {
   matcher: [
-    // Bỏ qua static files, chạy trên tất cả route còn lại
+    // Chạy trên tất cả route, bỏ qua static assets
+    // "/" khớp với pattern này và sẽ được middleware xử lý
     '/((?!_next/static|_next/image|favicon\\.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 };
